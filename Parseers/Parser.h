@@ -1,26 +1,52 @@
 #include <vector>
 #include <deque>
 #include "Analizator.h"
+#include <fstream>
 
 using namespace std;
+ofstream fout("output.txt");
 class Parser
 {
 public:
 	string all_txt;
 	Analizator A;
 	pair <string, string> now;
+	int space;
 	Parser(string all_txt) {
 		this->all_txt = all_txt;
 		A.Add(all_txt);
 	}
+	void TreeAdd(int space, string name)
+	{
+
+		for (int i = 0; i < space; ++i)
+		{
+			fout << " ";
+		}
+		fout << name << "\n";
+	}
+	void TreeAdd(int space, string name, string name2)
+	{
+
+		for (int i = 0; i < space; ++i)
+		{
+			fout << " ";
+		}
+		fout << name << " --> " << name2 << "\n";
+
+	}
 	void start()
 	{
+		space = 3;
 		now = Next_Lic();
 		if (now.first == "PROGRAM") {
 			now = Next_Lic();
+			TreeAdd(space, "Program");
 			check();
 			if (now.second == "ID") {
 				now = Next_Lic();
+				space += 5;
+				TreeAdd(space, now.second, now.first);
 				check();
 			}
 			else {
@@ -44,7 +70,9 @@ public:
 		}
 	}
 	void INTEGER() {
+		space = 6;
 		if (now.first == "INTEGER") {
+			TreeAdd(space, now.second, now.first);
 			now = Next_Lic();
 			check();
 			ID();
