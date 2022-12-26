@@ -2,4 +2,4 @@ PROGRAM aa
 INTEGER a , b , c
 c = a + d + ( c + d )
 FOR i = 3 TO o DO i = 3
-END
+END sa

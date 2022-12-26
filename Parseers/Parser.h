@@ -31,6 +31,7 @@ public:
 			Descr();
 			OP();
 			End();
+			cout << "NO ERROR,good game" << endl;
 	}
 	void Descr() {
 		while (true) {
