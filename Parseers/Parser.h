@@ -24,13 +24,13 @@ public:
 				check();
 			}
 			else {
-				cout << "Oøèáêà";
+				cout << "Program name error";
+				exit(-1);
 			}
 		}
-
-		Descr();
-		OP();
-		End();
+			Descr();
+			OP();
+			End();
 	}
 	void Descr() {
 		while (true) {
@@ -70,17 +70,10 @@ public:
 				check();
 				ID();
 			}
-			else if (now.first == "\n") {
-				now = Next_Lic();
-				check();
-				return;
-			}
-			else {
-				error();
-			}
 		}
 		else {
-			error();
+			cout << "ID eroor" << endl;
+			exit(-1);
 		}
 	}
 	void Simple_ID() {
@@ -90,7 +83,8 @@ public:
 			Operators();
 		}
 		else {
-			error();
+			cout << "simple ID eroor" << endl;
+			exit(-1);
 		}
 	}
 	void Operators() {
@@ -100,7 +94,8 @@ public:
 			Expr();
 		}
 		else {
-			error();
+			cout << "OPErator eroor" << endl;
+			exit(-1);
 		}
 	}
 	void Expr() {
@@ -118,26 +113,33 @@ public:
 		}
 	}
 	void SimpleExp() {
+		bool flag = false;
 		if (now.second == "ID") {
 			now = Next_Lic();
 			check();
-			Expr();
+			return;
 		}
 		else if (now.first == "(") {
 			now = Next_Lic();
 			check();
 			Expr();
 			if (now.first == ")") {
+				now = Next_Lic();
 				return;
 			}
 			else {
-				error();
+				cout << "simple exp error" << endl;
+				exit(-1);
 			}
 		}
-		if (now.second == "IntNum") {
+		else if (now.second == "IntNum") {
 			now = Next_Lic();
 			check();
-			Expr();
+			return;
+		}
+		else {
+			cout << "simple exp error" << endl;
+			exit(-1);
 		}
 	}
 	void FOR_OP() {
@@ -156,7 +158,8 @@ public:
 			Expr();
 		}
 		else {
-			error();
+			cout << "for_op error" << endl;
+			exit(-1);
 		}
 		if (now.first == "DO") {
 			now = Next_Lic();
@@ -165,6 +168,7 @@ public:
 		}
 		else {
 			error();
+			exit(-1);
 		}
 	}
 	void End() {

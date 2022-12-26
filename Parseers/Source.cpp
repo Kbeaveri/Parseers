@@ -16,9 +16,8 @@ int main() {
     string all_txt;
     string buffer;
     while (!fin.eof()) {
-        /*getline(fin, buffer);
-        all_txt += buffer+ " ";*/
-        fin >> buffer;
+        getline(fin, buffer);
+        all_txt += buffer+ " ";
     }
     Parser A(all_txt);
     A.start();

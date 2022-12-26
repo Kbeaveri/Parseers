@@ -9,7 +9,7 @@ class Analizator {
 public:
     vector <string> KW = { "PROGRAM","END","INTEGER","FOR","TO","DO" };
     vector <string> SEP = { "|n","\t" };
-    vector <string> Raz = { "=" , "+" };
+    vector <string> Raz = {")","(", "=" , "+" };
     string all_txt;
     string buf;
     //HashTable <string> hash;
