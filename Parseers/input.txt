@@ -1,5 +1,5 @@
-PROGRAM aa
-INTEGER a , b , c
+PROGRAM sa
+INTEGER a , b , b , c
 c = a + d + ( c + d )
-FOR i = 3 TO  DO i = 3
+FOR i = 3 TO O DO i = 3
 END sa

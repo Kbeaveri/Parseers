@@ -5,6 +5,7 @@
 using namespace std;
 
 int main() {
+    setlocale(LC_ALL, "russian");
     ifstream fin("input.txt");
     if (!fin.is_open()) {
         cout << "NO";

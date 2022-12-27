@@ -3,17 +3,52 @@
 #include "Analizator.h"
 #include <fstream>
 #include <map>
+#include <iterator>
 
 using namespace std;
 class Semantik {
 public:
 	string id_begin;
 	string id_end;
+	ofstream poliz;
+	ofstream semant;
+	map <string,int> determinate;
+	Semantik() {
+		poliz.open("Poliz.txt");
+		semant.open("semant.txt");
+	}
 	void Set_begin(string id) {
 		id_begin = id;
 	}
 	void Set_end(string id) {
 		id_end = id;
+	}
+	void Descr(string id) {
+		determinate[id]++;
+	}
+	void Check_descr() {
+		semant << "Проверка Descr" << endl;
+		map <string, int> ::iterator it = determinate.begin();
+		for (it; it != determinate.end(); it++) {
+			if (it->second > 1) {
+				semant << "Переменная (" << it->first << ") объявлена" << it->second << endl;
+			}
+		}
+	}
+	void Check_id(string id) {
+		if (determinate[id] == 0) {
+			semant << "Неиницилизированная переменная " << id << endl;
+		}
+
+	}
+	void Check_end() {
+		semant << "Проверка Begin end" << endl;
+		if (id_begin == id_end) {
+			semant << "end_id == begin_id" << endl;
+		}
+		else {
+			semant << "end_id != begin_id" << endl<< "end_id = "<< id_end << "      " << "begin id = "<< id_begin;
+		}
 	}
 	void Poliz_descr() {
 
@@ -28,6 +63,7 @@ public:
 	int space;
 	pair <string, string> now;
 	ofstream fout;
+	Semantik sm;
 	Parser(string all_txt) {
 		this->all_txt = all_txt;
 		A.Add(all_txt);
@@ -64,6 +100,7 @@ public:
 			now = Next_Lic();
 			check();
 			if (now.second == "ID") {
+				sm.id_begin = now.first;
 				TreeAdd(space, now.second, now.first);
 				now = Next_Lic();
 				space += 5;
@@ -77,12 +114,15 @@ public:
 		space = 3;
 		TreeAdd(space, "Description");
 		Descr();
+		sm.Check_descr();
 		space = 3;
 		TreeAdd(space, "Operator");
+		sm.semant << "Проверка OP" << endl;
 		OP();
 		space = 3;
 		TreeAdd(space, "END");
 		End();
+		sm.Check_end();
 		cout << "NO ERROR,good game" << endl;
 	}
 	void Descr() {
@@ -123,6 +163,7 @@ public:
 			space = 24;
 			TreeAdd(space,"VarList");
 			space = 30;
+			sm.Descr(now.first);
 			TreeAdd(space, now.second, now.first);
 			now = Next_Lic();
 			if (now.first == ",") {
@@ -138,6 +179,7 @@ public:
 	}
 	void Simple_ID() {
 		if (now.second == "ID") {
+			sm.Check_id(now.first);
 			space += 10;
 			TreeAdd(space, now.second, now.first);
 			now = Next_Lic();
@@ -181,6 +223,7 @@ public:
 	void SimpleExp() {
 		bool flag = false;
 		if (now.second == "ID") {
+			sm.Check_id(now.first);
 			space += 5;
 			TreeAdd(space, now.second, now.first);
 			now = Next_Lic();
@@ -225,6 +268,7 @@ public:
 			now = Next_Lic();
 			check();
 			Simple_ID();
+			sm.poliz << " m1  DEFL";
 		}
 		else {
 			return;
@@ -236,6 +280,7 @@ public:
 			space += 6;
 			check();
 			Expr();
+			sm.poliz << " m2 BF";
 		}
 		else {
 			cout << "for_op error" << endl;
@@ -246,7 +291,8 @@ public:
 			TreeAdd(space, now.second, now.first);
 			now = Next_Lic();
 			check();
-			Simple_ID();
+			OP();
+			sm.poliz << " m1 BRL" << endl;
 		}
 		else {
 			error();
@@ -258,6 +304,7 @@ public:
 			now = Next_Lic();
 			if (now.second == "ID") {
 				space += 10;
+				sm.id_end = now.first;
 				TreeAdd(space, now.second, now.first);
 			}
 			else {
