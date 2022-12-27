@@ -1,10 +1,31 @@
 #include <iostream>
 #include <string>
 #include <vector>
-//#include "HashTable.h"
+#include "HashTable.h"
 
 using namespace std;
-
+class Token {
+public:
+    string name;
+    string KW;
+    bool determined = false;
+    Token();
+    Token(string name, string KW) {
+        this->name = name;
+        this->KW = KW;
+    }
+    void Set(string name, string KW) {
+        this->name = name;
+        this->KW = KW;
+    }
+    const string operator ()(const Token now) {
+        return now.name;
+    }
+    friend bool operator==(const Token & left, const Token & right);
+};
+bool operator ==(const Token& left, const Token& right) {
+    return left.name == right.name;
+}
 class Analizator {
 public:
     vector <string> KW = { "PROGRAM","END","INTEGER","FOR","TO","DO" };
@@ -12,7 +33,8 @@ public:
     vector <string> Raz = {")","(", "=" , "+" };
     string all_txt;
     string buf;
-    //HashTable <string> hash;
+    Token now;
+    HashTable <Token> hash;
     int num = 0;
     Analizator() {
         this->all_txt = "";
@@ -37,7 +59,6 @@ public:
         int state = 1;
         buf = Go_next();
         bool isnum = false;
-        pair <string, string> answer;
         if (isdigit(buf[0])) {
             state = 2;
         }
@@ -65,46 +86,40 @@ public:
             return 3;
         }
     }
-    pair <string, string> Licsema() {
-        pair <string, string> answer;
+    Token Licsema() {
         int a = DKA();
         if (a == 2) {
-            answer.first = buf;
-            answer.second = "IntNum";
-            //hash.Add(answer.first, answer.second);
-            return answer;
+            now.Set(buf, "IntNum");
+            hash.Add(now);
+            return now;
         }
         if (a == 3) {
             if (find(KW.begin(), KW.end(), buf) != KW.end()) {
-                answer.first = buf;
-                answer.second = "KEY WORLD";
-                //hash.Add(answer.first, answer.second);
-                return answer;
+                now.Set(buf, "KEY WORLD");
+                hash.Add(now);
+                return now;
             }
             else {
-                answer.first = buf;
-                answer.second = "ID";
-                //hash.Add(answer.first, answer.second);
-                return answer;
+                now.Set(buf, "ID");
+                hash.Add(now);
+                return now;
             }
         }
         if (a == 4) {
             if (find(Raz.begin(), Raz.end(), buf) != Raz.end()) {
-                answer.first = buf;
-                answer.second = "OPERATOR";
-                //hash.Add(answer.first, answer.second);
-                return answer;
+                now.Set(buf, "OPERATOR");
+                hash.Add(now);
+                return now;
             }
             if (buf == "\n") {
-                answer.first = buf;
-                answer.second = "SEP";
-                return answer;
+                now.Set(buf, "SEP");
+                hash.Add(now);
+                return now;
             }
             else {
-                answer.first = buf;
-                answer.second = "ERROR";
-                //hash.Add(answer.first, answer.second);
-                return answer;
+                now.Set(buf, "ERROR");
+                hash.Add(now);
+                return now;
             }
         }
 

@@ -2,6 +2,7 @@
 #include <deque>
 #include "Analizator.h"
 #include <fstream>
+#include <map>
 
 using namespace std;
 
@@ -10,7 +11,9 @@ class Parser
 public:
 	string all_txt;
 	Analizator A;
-	pair <string, string> now;
+	string id_begin;
+	string id_end;
+	Token now;
 	int space;
 	ofstream fout;
 	Parser(string all_txt) {
@@ -43,13 +46,13 @@ public:
 		TreeAdd(space, "Begin");
 		space += 3;
 		now = Next_Lic();
-		if (now.first == "PROGRAM") {
+		if (now.name == "PROGRAM") {
 			TreeAdd(space, "Program");
 			space += 5;
 			now = Next_Lic();
 			check();
-			if (now.second == "ID") {
-				TreeAdd(space, now.second, now.first);
+			if (now.KW == "ID") {
+				TreeAdd(space, now.KW, now.name);
 				now = Next_Lic();
 				space += 5;
 				check();
@@ -72,7 +75,7 @@ public:
 	}
 	void Descr() {
 		while (true) {
-			if (now.first == "INTEGER") {
+			if (now.name == "INTEGER") {
 				INTEGER();
 			}
 			else {
@@ -82,8 +85,8 @@ public:
 	}
 	void INTEGER() {
 		space = 6;
-		if (now.first == "INTEGER") {
-			TreeAdd(space, now.second, now.first);
+		if (now.name == "INTEGER") {
+			TreeAdd(space, now.KW, now.name);
 			now = Next_Lic();
 			check();
 			ID();
@@ -91,10 +94,10 @@ public:
 	}
 	void OP() {
 		while (true) {
-			if (now.first == "FOR") {
+			if (now.name == "FOR") {
 				FOR_OP();
 			}
-			else if (now.second == "ID") {
+			else if (now.KW == "ID") {
 				TreeAdd(space+7, "OPER");
 				Simple_ID();
 			}
@@ -104,13 +107,13 @@ public:
 		}
 	}
 	void ID() {
-		if (now.second == "ID") {
+		if (now.KW == "ID") {
 			space = 24;
 			TreeAdd(space,"VarList");
 			space = 30;
-			TreeAdd(space, now.second, now.first);
+			TreeAdd(space, now.KW, now.name);
 			now = Next_Lic();
-			if (now.first == ",") {
+			if (now.name == ",") {
 				now = Next_Lic();
 				check();
 				ID();
@@ -122,9 +125,9 @@ public:
 		}
 	}
 	void Simple_ID() {
-		if (now.second == "ID") {
+		if (now.KW == "ID") {
 			space += 10;
-			TreeAdd(space, now.second, now.first);
+			TreeAdd(space, now.KW, now.name);
 			now = Next_Lic();
 			check();
 			Operators();
@@ -135,25 +138,25 @@ public:
 		}
 	}
 	void Operators() {
-		if (now.first == "=") {
+		if (now.name == "=") {
 			space += 5;
-			TreeAdd(space, now.second, now.first);
+			TreeAdd(space, now.KW, now.name);
 			now = Next_Lic();
 			check();
 			Expr();
 		}
 		else {
-			cout << "OPErator eroor" << endl;
+			cout << "Operator eroor" << endl;
 			exit(-1);
 		}
 	}
 	void Expr() {
 		SimpleExp();
 		while (true) {
-			if (now.first == "+" || now.first == "-")
+			if (now.name == "+" || now.name == "-")
 			{
 				space += 5;
-				TreeAdd(space, now.second, now.first);
+				TreeAdd(space, now.KW, now.name);
 				now = Next_Lic();
 				check();
 				Expr();
@@ -165,22 +168,22 @@ public:
 	}
 	void SimpleExp() {
 		bool flag = false;
-		if (now.second == "ID") {
+		if (now.KW == "ID") {
 			space += 5;
-			TreeAdd(space, now.second, now.first);
+			TreeAdd(space, now.KW, now.name);
 			now = Next_Lic();
 			check();
 			return;
 		}
-		else if (now.first == "(") {
+		else if (now.name == "(") {
 			space += 5;
-			TreeAdd(space, now.second, now.first);
+			TreeAdd(space, now.KW, now.name);
 			now = Next_Lic();
 			check();
 			Expr();
-			if (now.first == ")") {
+			if (now.name == ")") {
 				space += 5;
-				TreeAdd(space, now.second, now.first);
+				TreeAdd(space, now.KW, now.name);
 				now = Next_Lic();
 				return;
 			}
@@ -189,9 +192,9 @@ public:
 				exit(-1);
 			}
 		}
-		else if (now.second == "IntNum") {
+		else if (now.KW == "IntNum") {
 			space += 5;
-			TreeAdd(space, now.second, now.first);
+			TreeAdd(space, now.KW, now.name);
 			now = Next_Lic();
 			check();
 			return;
@@ -204,9 +207,9 @@ public:
 	void FOR_OP() {
 		space = 10;
 		TreeAdd(space, "OPER");
-		if (now.first == "FOR") {
+		if (now.name == "FOR") {
 			space = 15;
-			TreeAdd(space, now.second, now.first);
+			TreeAdd(space, now.KW, now.name);
 			now = Next_Lic();
 			check();
 			Simple_ID();
@@ -214,9 +217,9 @@ public:
 		else {
 			return;
 		}
-		if (now.first == "TO") {
+		if (now.name == "TO") {
 			space = 15;
-			TreeAdd(space, now.second, now.first);
+			TreeAdd(space, now.KW, now.name);
 			now = Next_Lic();
 			space += 6;
 			check();
@@ -226,9 +229,9 @@ public:
 			cout << "for_op error" << endl;
 			exit(-1);
 		}
-		if (now.first == "DO") {
+		if (now.name == "DO") {
 			space = 15;
-			TreeAdd(space, now.second, now.first);
+			TreeAdd(space, now.KW, now.name);
 			now = Next_Lic();
 			check();
 			Simple_ID();
@@ -239,11 +242,11 @@ public:
 		}
 	}
 	void End() {
-		if (now.first == "END") {
+		if (now.name == "END") {
 			now = Next_Lic();
-			if (now.second == "ID") {
+			if (now.KW == "ID") {
 				space += 10;
-				TreeAdd(space, now.second, now.first);
+				TreeAdd(space, now.KW, now.name);
 			}
 			else {
 				cout << "Od";
@@ -261,19 +264,18 @@ public:
 
 	}
 	void check() {
-		if (now.second == "null" && now.first == "null") {
+		if (now.KW == "null" && now.name == "null") {
 			cout << "LOL Error";
 			exit(-1);
 		}
 	}
 
 
-	pair <string, string> Next_Lic()
+	Token Next_Lic()
 	{
 		if (A.is_empty()) {
 			return A.Licsema();
 		}
-		return pair<string, string>("null", "null");
 	}
 };
 

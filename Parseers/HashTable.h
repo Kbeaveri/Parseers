@@ -30,7 +30,7 @@ class HashTable
         T value;
         T value2;
         bool state; // если значение флага state = false, значит элемент массива был удален (deleted)
-        Node(const T& value_, const T& value2_) : value(value_), value2(value2_), state(true) {}
+        Node(const T& value_) : value(value_), state(true) {}
     };
     Node** arr; // соответственно в массиве будут хранится структуры Node*
     int size; // сколько элементов у нас сейчас в массиве (без учета deleted)
@@ -66,7 +66,7 @@ public:
         for (int i = 0; i < past_buffer_size; ++i)
         {
             if (arr2[i] && arr2[i]->state)
-                Add(arr2[i]->value, arr2[i]->value2); // добавляем элементы в новый массив
+                Add(arr2[i]->value); // добавляем элементы в новый массив
         }
         // удаление предыдущего массива
         for (int i = 0; i < past_buffer_size; ++i)
@@ -86,7 +86,7 @@ public:
         for (int i = 0; i < buffer_size; ++i)
         {
             if (arr2[i] && arr2[i]->state)
-                Add(arr2[i]->value, arr2[i]->value2);
+                Add(arr2[i]->value);
         }
         // удаление предыдущего массива
         for (int i = 0; i < buffer_size; ++i)
@@ -127,7 +127,7 @@ public:
         }
         return false;
     }
-    bool Add(const T& value, const T& value2, const THash1& hash1 = THash1(), const THash2& hash2 = THash2())
+    bool Add(const T& value, const THash1& hash1 = THash1(), const THash2& hash2 = THash2())
     {
         if (size + 1 > int(rehash_size * buffer_size))
             Resize();
@@ -148,13 +148,12 @@ public:
         }
         if (first_deleted == -1) // если не нашлось подходящего места, создаем новый Node
         {
-            arr[h1] = new Node(value, value2);
+            arr[h1] = new Node(value);
             ++size_all_non_nullptr; // так как мы заполнили один пробел, не забываем записать, что это место теперь занято
         }
         else
         {
             arr[first_deleted]->value = value;
-            arr[first_deleted]->value2 = value2;
             arr[first_deleted]->state = true;
         }
         ++size; // и в любом случае мы увеличили количество элементов
