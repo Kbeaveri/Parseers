@@ -1,54 +1,30 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "HashTable.h"
 
 using namespace std;
-class Token {
-public:
-    string name;
-    string KW;
-    bool determined = false;
-    Token();
-    Token(string name, string KW) {
-        this->name = name;
-        this->KW = KW;
-    }
-    void Set(string name, string KW) {
-        this->name = name;
-        this->KW = KW;
-    }
-    const string operator ()(const Token now) {
-        return now.name;
-    }
-    friend bool operator==(const Token & left, const Token & right);
-};
-bool operator ==(const Token& left, const Token& right) {
-    return left.name == right.name;
-}
+
 class Analizator {
 public:
-    vector <string> KW = { "PROGRAM","END","INTEGER","FOR","TO","DO" };
-    vector <string> SEP = { "|n","\t" };
-    vector <string> Raz = {")","(", "=" , "+" };
+    vector <string> KW = { "PROGRAM","END","INTEGER" };
+    vector <string> SEP = { "\n","\t" };
+    vector <string> Raz = { ")","(","=" , "+","FOR","TO","DO" };
     string all_txt;
     string buf;
-    Token now;
-    HashTable <Token> hash;
     int num = 0;
+    void Add(string a) {
+        this->all_txt = a;
+    }
     Analizator() {
         this->all_txt = "";
     }
     Analizator(string all_txt) {
         this->all_txt = all_txt;
     }
-    void Add(string a) {
-        this->all_txt = a;
-    }
     string Go_next() {
         int i = num;
         string buf;
-        while (all_txt[i] != ' ' && all_txt.size() > i) {
+        while (all_txt[i] != ' '&& i < all_txt.size()) {
             buf += all_txt[i];
             i++;
         }
@@ -59,6 +35,7 @@ public:
         int state = 1;
         buf = Go_next();
         bool isnum = false;
+        pair <string, string> answer;
         if (isdigit(buf[0])) {
             state = 2;
         }
@@ -86,40 +63,36 @@ public:
             return 3;
         }
     }
-    Token Licsema() {
+    pair <string, string> Licsema() {
+        pair <string, string> answer;
         int a = DKA();
         if (a == 2) {
-            now.Set(buf, "IntNum");
-            hash.Add(now);
-            return now;
+            answer.first = buf;
+            answer.second = "IntNum";
+            return answer;
         }
         if (a == 3) {
             if (find(KW.begin(), KW.end(), buf) != KW.end()) {
-                now.Set(buf, "KEY WORLD");
-                hash.Add(now);
-                return now;
+                answer.first = buf;
+                answer.second = "KEY WORLD";
+                return answer;
             }
             else {
-                now.Set(buf, "ID");
-                hash.Add(now);
-                return now;
+                answer.first = buf;
+                answer.second = "ID";
+                return answer;
             }
         }
         if (a == 4) {
             if (find(Raz.begin(), Raz.end(), buf) != Raz.end()) {
-                now.Set(buf, "OPERATOR");
-                hash.Add(now);
-                return now;
-            }
-            if (buf == "\n") {
-                now.Set(buf, "SEP");
-                hash.Add(now);
-                return now;
+                answer.first = buf;
+                answer.second = "OPERATOR";
+                return answer;
             }
             else {
-                now.Set(buf, "ERROR");
-                hash.Add(now);
-                return now;
+                answer.first = buf;
+                answer.second = "ERROR";
+                return answer;
             }
         }
 

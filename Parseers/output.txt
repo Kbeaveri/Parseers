@@ -23,13 +23,13 @@
                                                           ID --> d
                                                                OPERATOR --> )
           OPER
-               KEY WORLD --> FOR
+               ID --> FOR
                          ID --> i
                               OPERATOR --> =
                                    IntNum --> 3
-               KEY WORLD --> TO
+               ID --> TO
                           ID --> o
-               KEY WORLD --> DO
+               ID --> DO
                          ID --> i
                               OPERATOR --> =
                                    IntNum --> 3

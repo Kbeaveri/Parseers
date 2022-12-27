@@ -1,6 +1,6 @@
-#include <string>
+п»ї#include <string>
 #include <iostream>
-#include <fstream>
+
 using namespace std;
 
 int HashFunctionHorner(const std::string& s, int table_size, const int key);
@@ -9,7 +9,7 @@ struct HashFunction1
 {
     int operator()(const std::string& s, int table_size) const
     {
-        return HashFunctionHorner(s, table_size, table_size - 1); // ключи должны быть взаимопросты, используем числа <размер таблицы> плюс и минус один.
+        return HashFunctionHorner(s, table_size, table_size - 1); // ГЄГ«ГѕГ·ГЁ Г¤Г®Г«Г¦Г­Г» ГЎГ»ГІГј ГўГ§Г ГЁГ¬Г®ГЇГ°Г®Г±ГІГ», ГЁГ±ГЇГ®Г«ГјГ§ГіГҐГ¬ Г·ГЁГ±Г«Г  <Г°Г Г§Г¬ГҐГ° ГІГ ГЎГ«ГЁГ¶Г»> ГЇГ«ГѕГ± ГЁ Г¬ГЁГ­ГіГ± Г®Г¤ГЁГ­.
     }
 };
 struct HashFunction2
@@ -23,19 +23,19 @@ struct HashFunction2
 template <class T, class THash1 = HashFunction1, class THash2 = HashFunction2>
 class HashTable
 {
-    static const int default_size = 8; // начальный размер нашей таблицы
-    constexpr static const double rehash_size = 0.75; // коэффициент, при котором произойдет увеличение таблицы
+    static const int default_size = 8; // Г­Г Г·Г Г«ГјГ­Г»Г© Г°Г Г§Г¬ГҐГ° Г­Г ГёГҐГ© ГІГ ГЎГ«ГЁГ¶Г»
+    constexpr static const double rehash_size = 0.75; // ГЄГ®ГЅГґГґГЁГ¶ГЁГҐГ­ГІ, ГЇГ°ГЁ ГЄГ®ГІГ®Г°Г®Г¬ ГЇГ°Г®ГЁГ§Г®Г©Г¤ГҐГІ ГіГўГҐГ«ГЁГ·ГҐГ­ГЁГҐ ГІГ ГЎГ«ГЁГ¶Г»
     struct Node
     {
         T value;
         T value2;
-        bool state; // если значение флага state = false, значит элемент массива был удален (deleted)
-        Node(const T& value_) : value(value_), state(true) {}
+        bool state; // ГҐГ±Г«ГЁ Г§Г­Г Г·ГҐГ­ГЁГҐ ГґГ«Г ГЈГ  state = false, Г§Г­Г Г·ГЁГІ ГЅГ«ГҐГ¬ГҐГ­ГІ Г¬Г Г±Г±ГЁГўГ  ГЎГ»Г« ГіГ¤Г Г«ГҐГ­ (deleted)
+        Node(const T& value_, const T& value2_) : value(value_), value2(value2_), state(true) {}
     };
-    Node** arr; // соответственно в массиве будут хранится структуры Node*
-    int size; // сколько элементов у нас сейчас в массиве (без учета deleted)
-    int buffer_size; // размер самого массива, сколько памяти выделено под хранение нашей таблицы
-    int size_all_non_nullptr; // сколько элементов у нас сейчас в массиве (с учетом deleted)
+    Node** arr; // Г±Г®Г®ГІГўГҐГІГ±ГІГўГҐГ­Г­Г® Гў Г¬Г Г±Г±ГЁГўГҐ ГЎГіГ¤ГіГІ ГµГ°Г Г­ГЁГІГ±Гї Г±ГІГ°ГіГЄГІГіГ°Г» Node*
+    int size; // Г±ГЄГ®Г«ГјГЄГ® ГЅГ«ГҐГ¬ГҐГ­ГІГ®Гў Гі Г­Г Г± Г±ГҐГ©Г·Г Г± Гў Г¬Г Г±Г±ГЁГўГҐ (ГЎГҐГ§ ГіГ·ГҐГІГ  deleted)
+    int buffer_size; // Г°Г Г§Г¬ГҐГ° Г±Г Г¬Г®ГЈГ® Г¬Г Г±Г±ГЁГўГ , Г±ГЄГ®Г«ГјГЄГ® ГЇГ Г¬ГїГІГЁ ГўГ»Г¤ГҐГ«ГҐГ­Г® ГЇГ®Г¤ ГµГ°Г Г­ГҐГ­ГЁГҐ Г­Г ГёГҐГ© ГІГ ГЎГ«ГЁГ¶Г»
+    int size_all_non_nullptr; // Г±ГЄГ®Г«ГјГЄГ® ГЅГ«ГҐГ¬ГҐГ­ГІГ®Гў Гі Г­Г Г± Г±ГҐГ©Г·Г Г± Гў Г¬Г Г±Г±ГЁГўГҐ (Г± ГіГ·ГҐГІГ®Г¬ deleted)
 public:
     HashTable()
     {
@@ -44,7 +44,7 @@ public:
         size_all_non_nullptr = 0;
         arr = new Node * [buffer_size];
         for (int i = 0; i < buffer_size; ++i)
-            arr[i] = nullptr; // заполняем nullptr - то есть если значение отсутствует, и никто раньше по этому адресу не обращался
+            arr[i] = nullptr; // Г§Г ГЇГ®Г«Г­ГїГҐГ¬ nullptr - ГІГ® ГҐГ±ГІГј ГҐГ±Г«ГЁ Г§Г­Г Г·ГҐГ­ГЁГҐ Г®ГІГ±ГіГІГ±ГІГўГіГҐГІ, ГЁ Г­ГЁГЄГІГ® Г°Г Г­ГјГёГҐ ГЇГ® ГЅГІГ®Г¬Гі Г Г¤Г°ГҐГ±Гі Г­ГҐ Г®ГЎГ°Г Г№Г Г«Г±Гї
     }
     ~HashTable()
     {
@@ -66,9 +66,9 @@ public:
         for (int i = 0; i < past_buffer_size; ++i)
         {
             if (arr2[i] && arr2[i]->state)
-                Add(arr2[i]->value); // добавляем элементы в новый массив
+                Add(arr2[i]->value, arr2[i]->value2); // Г¤Г®ГЎГ ГўГ«ГїГҐГ¬ ГЅГ«ГҐГ¬ГҐГ­ГІГ» Гў Г­Г®ГўГ»Г© Г¬Г Г±Г±ГЁГў
         }
-        // удаление предыдущего массива
+        // ГіГ¤Г Г«ГҐГ­ГЁГҐ ГЇГ°ГҐГ¤Г»Г¤ГіГ№ГҐГЈГ® Г¬Г Г±Г±ГЁГўГ 
         for (int i = 0; i < past_buffer_size; ++i)
             if (arr2[i])
                 delete arr2[i];
@@ -86,9 +86,9 @@ public:
         for (int i = 0; i < buffer_size; ++i)
         {
             if (arr2[i] && arr2[i]->state)
-                Add(arr2[i]->value);
+                Add(arr2[i]->value, arr2[i]->value2);
         }
-        // удаление предыдущего массива
+        // ГіГ¤Г Г«ГҐГ­ГЁГҐ ГЇГ°ГҐГ¤Г»Г¤ГіГ№ГҐГЈГ® Г¬Г Г±Г±ГЁГўГ 
         for (int i = 0; i < buffer_size; ++i)
             if (arr2[i])
                 delete arr2[i];
@@ -96,16 +96,16 @@ public:
     }
     bool Find(const T& value, const THash1& hash1 = THash1(), const THash2& hash2 = THash2())
     {
-        int h1 = hash1(value, buffer_size); // значение, отвечающее за начальную позицию
-        int h2 = hash2(value, buffer_size); // значение, ответственное за "шаг" по таблице
+        int h1 = hash1(value, buffer_size); // Г§Г­Г Г·ГҐГ­ГЁГҐ, Г®ГІГўГҐГ·Г ГѕГ№ГҐГҐ Г§Г  Г­Г Г·Г Г«ГјГ­ГіГѕ ГЇГ®Г§ГЁГ¶ГЁГѕ
+        int h2 = hash2(value, buffer_size); // Г§Г­Г Г·ГҐГ­ГЁГҐ, Г®ГІГўГҐГІГ±ГІГўГҐГ­Г­Г®ГҐ Г§Г  "ГёГ ГЈ" ГЇГ® ГІГ ГЎГ«ГЁГ¶ГҐ
         int i = 0;
         while (arr[h1] != nullptr && i < buffer_size)
         {
             if (arr[h1]->value == value && arr[h1]->state)
                 cout << arr[h1]->value << " " << h1;
-            return true; // такой элемент есть
+            return true; // ГІГ ГЄГ®Г© ГЅГ«ГҐГ¬ГҐГ­ГІ ГҐГ±ГІГј
             h1 = (h1 + h2) % buffer_size;
-            ++i; // если у нас i >=  buffer_size, значит мы уже обошли абсолютно все ячейки, именно для этого мы считаем i, иначе мы могли бы зациклиться.
+            ++i; // ГҐГ±Г«ГЁ Гі Г­Г Г± i >=  buffer_size, Г§Г­Г Г·ГЁГІ Г¬Г» ГіГ¦ГҐ Г®ГЎГ®ГёГ«ГЁ Г ГЎГ±Г®Г«ГѕГІГ­Г® ГўГ±ГҐ ГїГ·ГҐГ©ГЄГЁ, ГЁГ¬ГҐГ­Г­Г® Г¤Г«Гї ГЅГІГ®ГЈГ® Г¬Г» Г±Г·ГЁГІГ ГҐГ¬ i, ГЁГ­Г Г·ГҐ Г¬Г» Г¬Г®ГЈГ«ГЁ ГЎГ» Г§Г Г¶ГЁГЄГ«ГЁГІГјГ±Гї.
         }
         return false;
     }
@@ -127,36 +127,37 @@ public:
         }
         return false;
     }
-    bool Add(const T& value, const THash1& hash1 = THash1(), const THash2& hash2 = THash2())
+    bool Add(const T& value, const T& value2, const THash1& hash1 = THash1(), const THash2& hash2 = THash2())
     {
         if (size + 1 > int(rehash_size * buffer_size))
             Resize();
         else if (size_all_non_nullptr > 2 * size)
-            Rehash(); // происходит рехеш, так как слишком много deleted-элементов
+            Rehash(); // ГЇГ°Г®ГЁГ±ГµГ®Г¤ГЁГІ Г°ГҐГµГҐГё, ГІГ ГЄ ГЄГ ГЄ Г±Г«ГЁГёГЄГ®Г¬ Г¬Г­Г®ГЈГ® deleted-ГЅГ«ГҐГ¬ГҐГ­ГІГ®Гў
         int h1 = hash1(value, buffer_size);
         int h2 = hash2(value, buffer_size);
         int i = 0;
-        int first_deleted = -1; // запоминаем первый подходящий (удаленный) элемент
+        int first_deleted = -1; // Г§Г ГЇГ®Г¬ГЁГ­Г ГҐГ¬ ГЇГҐГ°ГўГ»Г© ГЇГ®Г¤ГµГ®Г¤ГїГ№ГЁГ© (ГіГ¤Г Г«ГҐГ­Г­Г»Г©) ГЅГ«ГҐГ¬ГҐГ­ГІ
         while (arr[h1] != nullptr && i < buffer_size)
         {
             if (arr[h1]->value == value && arr[h1]->state)
-                return false; // такой элемент уже есть, а значит его нельзя вставлять повторно
-            if (!arr[h1]->state && first_deleted == -1) // находим место для нового элемента
+                return false; // ГІГ ГЄГ®Г© ГЅГ«ГҐГ¬ГҐГ­ГІ ГіГ¦ГҐ ГҐГ±ГІГј, Г  Г§Г­Г Г·ГЁГІ ГҐГЈГ® Г­ГҐГ«ГјГ§Гї ГўГ±ГІГ ГўГ«ГїГІГј ГЇГ®ГўГІГ®Г°Г­Г®
+            if (!arr[h1]->state && first_deleted == -1) // Г­Г ГµГ®Г¤ГЁГ¬ Г¬ГҐГ±ГІГ® Г¤Г«Гї Г­Г®ГўГ®ГЈГ® ГЅГ«ГҐГ¬ГҐГ­ГІГ 
                 first_deleted = h1;
             h1 = (h1 + h2) % buffer_size;
             ++i;
         }
-        if (first_deleted == -1) // если не нашлось подходящего места, создаем новый Node
+        if (first_deleted == -1) // ГҐГ±Г«ГЁ Г­ГҐ Г­Г ГёГ«Г®Г±Гј ГЇГ®Г¤ГµГ®Г¤ГїГ№ГҐГЈГ® Г¬ГҐГ±ГІГ , Г±Г®Г§Г¤Г ГҐГ¬ Г­Г®ГўГ»Г© Node
         {
-            arr[h1] = new Node(value);
-            ++size_all_non_nullptr; // так как мы заполнили один пробел, не забываем записать, что это место теперь занято
+            arr[h1] = new Node(value, value2);
+            ++size_all_non_nullptr; // ГІГ ГЄ ГЄГ ГЄ Г¬Г» Г§Г ГЇГ®Г«Г­ГЁГ«ГЁ Г®Г¤ГЁГ­ ГЇГ°Г®ГЎГҐГ«, Г­ГҐ Г§Г ГЎГ»ГўГ ГҐГ¬ Г§Г ГЇГЁГ±Г ГІГј, Г·ГІГ® ГЅГІГ® Г¬ГҐГ±ГІГ® ГІГҐГЇГҐГ°Гј Г§Г Г­ГїГІГ®
         }
         else
         {
             arr[first_deleted]->value = value;
+            arr[first_deleted]->value2 = value2;
             arr[first_deleted]->state = true;
         }
-        ++size; // и в любом случае мы увеличили количество элементов
+        ++size; // ГЁ Гў Г«ГѕГЎГ®Г¬ Г±Г«ГіГ·Г ГҐ Г¬Г» ГіГўГҐГ«ГЁГ·ГЁГ«ГЁ ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ® ГЅГ«ГҐГ¬ГҐГ­ГІГ®Гў
         return true;
     }
     void Print_all() {
