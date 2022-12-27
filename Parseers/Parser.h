@@ -167,7 +167,10 @@ public:
 		space = 3;
 		TreeAdd(space, "Operator");
 		sm.semant << "Проверка OP" << endl;
-		OP();
+		while (now.first == "FOR" || now.second == "ID") {
+			OP();
+			sm.poliz << endl;
+		}
 		space = 3;
 		TreeAdd(space, "END");
 		End();
@@ -224,6 +227,7 @@ public:
 			else if (now.second == "ID") {
 				TreeAdd(space+7, "OPER");
 				Simple_ID();
+				break;
 			}
 			else {
 				break;
@@ -324,7 +328,6 @@ public:
 		TreeAdd(space, "OPER");
 		if (now.first == "FOR") {
 			space = 15;
-			sm.poliz << endl;
 			TreeAdd(space, now.second, now.first);
 			now = Next_Lic();
 			check();
@@ -362,6 +365,7 @@ public:
 			error();
 			exit(-1);
 		}
+		OP();
 	}
 	void End() {
 		if (now.first == "END") {

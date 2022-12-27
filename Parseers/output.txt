@@ -11,6 +11,20 @@
                               ID --> c
    Operator
           OPER
+             ID --> a
+                  OPERATOR --> =
+                       OPERATOR --> (
+                            OPERATOR --> (
+                                 ID --> c
+                                      OPERATOR --> +
+                                           ID --> b
+                                                OPERATOR --> +
+                                                     ID --> v
+                                                          OPERATOR --> )
+                                                               OPERATOR --> )
+                                                                    OPERATOR --> +
+                                                                         ID --> c
+          OPER
                KEY WORLD --> FOR
                          ID --> i
                               OPERATOR --> =
@@ -22,17 +36,5 @@
                          ID --> i
                               OPERATOR --> =
                                    IntNum --> 3
-                                          OPER
-                                             ID --> a
-                                                  OPERATOR --> =
-                                                       OPERATOR --> (
-                                                            ID --> c
-                                                                 OPERATOR --> +
-                                                                      ID --> b
-                                                                           OPERATOR --> +
-                                                                                ID --> v
-                                                                                     OPERATOR --> )
-                                                                                          OPERATOR --> +
-                                                                                               ID --> c
    END
              ID --> sa
