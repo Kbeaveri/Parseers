@@ -1,0 +1,37 @@
+   Begin
+      Program
+           ID --> aa
+   Description
+      KEY WORLD --> INTEGER
+                        VarList
+                              ID --> a
+                        VarList
+                              ID --> b
+                        VarList
+                              ID --> c
+   Operator
+          OPER
+             ID --> c
+                  OPERATOR --> =
+                       ID --> a
+                            OPERATOR --> +
+                                 ID --> d
+                                      OPERATOR --> +
+                                           OPERATOR --> (
+                                                ID --> c
+                                                     OPERATOR --> +
+                                                          ID --> d
+                                                               OPERATOR --> )
+          OPER
+               KEY WORLD --> FOR
+                         ID --> i
+                              OPERATOR --> =
+                                   IntNum --> 3
+               KEY WORLD --> TO
+                          ID --> o
+               KEY WORLD --> DO
+                         ID --> i
+                              OPERATOR --> =
+                                   IntNum --> 3
+   END
+             ID --> sa

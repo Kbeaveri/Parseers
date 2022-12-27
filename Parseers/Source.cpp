@@ -1,6 +1,5 @@
 #include <iostream>
 #include <vector>
-#include <fstream>
 #include <string>
 #include <algorithm>
 #include "Parser.h"
@@ -12,7 +11,6 @@ int main() {
     if (!fin.is_open()) {
         cout << "NO";
     }
-    ofstream fout("output.txt");
     string all_txt;
     string buffer;
     while (!fin.eof()) {
