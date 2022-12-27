@@ -18,8 +18,8 @@ public:
         this->name = name;
         this->KW = KW;
     }
-    const string operator ()(const Token now) {
-        return now.name;
+    const string&  operator ()() {
+        return this->name;
     }
     friend bool operator==(const Token & left, const Token & right);
 };

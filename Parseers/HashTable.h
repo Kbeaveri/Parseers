@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -29,8 +30,9 @@ class HashTable
     {
         T value;
         T value2;
+        T value3;
         bool state; // если значение флага state = false, значит элемент массива был удален (deleted)
-        Node(const T& value_) : value(value_), state(true) {}
+        Node(const T& value_, const T& value2_,const T& value3_) : value(value_),value2(value2_),value3(value3_) ,state(true) {}
     };
     Node** arr; // соответственно в массиве будут хранится структуры Node*
     int size; // сколько элементов у нас сейчас в массиве (без учета deleted)
