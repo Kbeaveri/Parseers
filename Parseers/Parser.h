@@ -28,18 +28,18 @@ public:
 	void Descr(string id) {
 		determinate[id]++;
 	}
-	void Check_descr() {
+	void Check_descr(int kol, int nomer) {
 		semant << "Проверка Descr" << endl;
 		map <string, int> ::iterator it = determinate.begin();
 		for (it; it != determinate.end(); it++) {
 			if (it->second > 1) {
-				semant << "Переменная (" << it->first << ") объявлена" << it->second << endl;
+				semant << "Переменная (" << it->first << ") объявлена" << it->second << " на pos : " << kol << "  " << nomer << endl;
 			}
 		}
 	}
-	void Check_id(string id) {
+	void Check_id(string id,int kol,int nomer) {
 		if (determinate[id] == 0) {
-			semant << "Неиницилизированная переменная " << id << endl;
+			semant << "Неиницилизированная переменная " << id << " на pos: " << kol << "  "<< nomer << endl;
 		}
 
 	}
@@ -111,6 +111,7 @@ public:
 	pair <string, string> now;
 	ofstream fout;
 	Semantik sm;
+	int kol, nomer = 1;
 	int kolvo = 0;
 	Parser(string all_txt) {
 		this->all_txt = all_txt;
@@ -146,6 +147,7 @@ public:
 			TreeAdd(space, "Program");
 			space += 5;
 			now = Next_Lic();
+			nomer++;
 			check();
 			if (now.second == "ID") {
 				sm.id_begin = now.first;
@@ -153,29 +155,34 @@ public:
 				TreeAdd(space, now.second, now.first);
 				now = Next_Lic();
 				space += 5;
+				kol++;
+				nomer = 1;
 				check();
 			}
 			else {
-				cout << "Program name error";
+				cout << "Program name error строка " << kol << "лекскма " << nomer;
 				exit(-1);
 			}
 		}
 		space = 3;
 		TreeAdd(space, "Description");
 		Descr();
-		sm.Check_descr();
+		sm.Check_descr(kol,nomer);
 		space = 3;
 		TreeAdd(space, "Operator");
 		sm.semant << "Проверка OP" << endl;
 		while (now.first == "FOR" || now.second == "ID") {
 			OP();
 			sm.poliz << endl;
+			kol++;
+			nomer = 1;
 		}
 		space = 3;
 		TreeAdd(space, "END");
 		End();
 		sm.Check_end();
-		cout << "NO ERROR,good game" << endl;
+		A.hash.fout();
+		cout << "NO Syntax ERROR,good game" << endl;
 	}
 	void Descr() {
 		while (true) {
@@ -187,6 +194,8 @@ public:
 			else {
 				break;
 			}
+			kol++;
+			nomer = 1;
 		}
 	}
 	void INTEGER() {
@@ -194,6 +203,7 @@ public:
 		if (now.first == "INTEGER") {
 			TreeAdd(space, now.second, now.first);
 			now = Next_Lic();
+			nomer++;
 			check();
 			ID();
 		}
@@ -208,14 +218,16 @@ public:
 			sm.Descr(now.first);
 			TreeAdd(space, now.second, now.first);
 			now = Next_Lic();
+			nomer++;
 			if (now.first == ",") {
 				now = Next_Lic();
+				nomer++;
 				check();
 				ID();
 			}
 		}
 		else {
-			cout << "ID eroor" << endl;
+			cout << "ID eroor" << kol << nomer << endl;
 			exit(-1);
 		}
 	}
@@ -236,17 +248,18 @@ public:
 	}
 	void Simple_ID() {
 		if (now.second == "ID") {
-			sm.Check_id(now.first);
+			sm.Check_id(now.first, kol, nomer);
 			sm.expr.push_back(make_pair(now.first, now.second));
 			space += 10;
 			TreeAdd(space, now.second, now.first);
 			now = Next_Lic();
+			nomer++;
 			check();
 			Operators();
 			sm.Deycstra();
 		}
 		else {
-			cout << "simple ID eroor" << endl;
+			cout << "simple ID eroor pos : " << kol << " " << nomer << endl;
 			exit(-1);
 		}
 	}
@@ -256,11 +269,12 @@ public:
 			sm.expr.push_back(make_pair(now.first, now.second));
 			TreeAdd(space, now.second, now.first);
 			now = Next_Lic();
+			nomer++;
 			check();
 			Expr();
 		}
 		else {
-			cout << "Operator eroor" << endl;
+			cout << "Operator eroor pos : " << kol << " " << nomer << endl;
 			exit(-1);
 		}
 	}
@@ -273,6 +287,7 @@ public:
 				space += 5;
 				TreeAdd(space, now.second, now.first);
 				now = Next_Lic();
+				nomer++;
 				check();
 				Expr();
 			}
@@ -284,10 +299,11 @@ public:
 	void SimpleExp() {
 		if (now.second == "ID") {
 			sm.expr.push_back(make_pair(now.first, now.second));
-			sm.Check_id(now.first);
+			sm.Check_id(now.first,kol, nomer);
 			space += 5;
 			TreeAdd(space, now.second, now.first);
 			now = Next_Lic();
+			nomer++;
 			check();
 			return;
 		}
@@ -296,6 +312,7 @@ public:
 			space += 5;
 			TreeAdd(space, now.second, now.first);
 			now = Next_Lic();
+			nomer++;
 			check();
 			Expr();
 			if (now.first == ")") {
@@ -303,10 +320,11 @@ public:
 				space += 5;
 				TreeAdd(space, now.second, now.first);
 				now = Next_Lic();
+				nomer++;
 				return;
 			}
 			else {
-				cout << "simple exp error" << endl;
+				cout << "simple exp errorpos : " << kol << " " << nomer << endl;
 				exit(-1);
 			}
 		}
@@ -315,11 +333,12 @@ public:
 			space += 5;
 			TreeAdd(space, now.second, now.first);
 			now = Next_Lic();
+			nomer++;
 			check();
 			return;
 		}
 		else {
-			cout << "simple exp error" << endl;
+			cout << "simple exp error pos : " << kol << " " << nomer << endl;
 			exit(-1);
 		}
 	}
@@ -330,6 +349,7 @@ public:
 			space = 15;
 			TreeAdd(space, now.second, now.first);
 			now = Next_Lic();
+			nomer++;
 			check();
 			Simple_ID();
 			sm.Deycstra();
@@ -342,6 +362,7 @@ public:
 			space = 15;
 			TreeAdd(space, now.second, now.first);
 			now = Next_Lic();
+			nomer++;
 			space += 6;
 			check();
 			Expr();
@@ -356,6 +377,7 @@ public:
 			space = 15;
 			TreeAdd(space, now.second, now.first);
 			now = Next_Lic();
+			nomer++;
 			check();
 			OP();
 			sm.Deycstra();

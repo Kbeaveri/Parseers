@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "HashTable.h"
 
 using namespace std;
 
@@ -11,6 +12,7 @@ public:
     vector <string> Raz = { ")","(","=" , "+" };
     string all_txt;
     string buf;
+    HashTable <string> hash;
     int num = 0;
     void Add(string a) {
         this->all_txt = a;
@@ -69,17 +71,20 @@ public:
         if (a == 2) {
             answer.first = buf;
             answer.second = "IntNum";
+            hash.Add(answer.first, answer.second);
             return answer;
         }
         if (a == 3) {
             if (find(KW.begin(), KW.end(), buf) != KW.end()) {
                 answer.first = buf;
                 answer.second = "KEY WORLD";
+                hash.Add(answer.first, answer.second);
                 return answer;
             }
             else {
                 answer.first = buf;
                 answer.second = "ID";
+                hash.Add(answer.first, answer.second);
                 return answer;
             }
         }
@@ -87,11 +92,13 @@ public:
             if (find(Raz.begin(), Raz.end(), buf) != Raz.end()) {
                 answer.first = buf;
                 answer.second = "OPERATOR";
+                hash.Add(answer.first, answer.second);
                 return answer;
             }
             else {
                 answer.first = buf;
                 answer.second = "ERROR";
+                hash.Add(answer.first, answer.second);
                 return answer;
             }
         }

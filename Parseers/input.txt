@@ -1,5 +1,5 @@
 PROGRAM sa
-INTEGER a , b , c
-a = ( ( c + b + v ) ) + c
-FOR i = 1 TO O DO i = 3
+INTEGER a , a , b , c
+a = ( ( c + b + v ) ) + 3
+FOR i = =  1 TO O DO i = 3
 END sa

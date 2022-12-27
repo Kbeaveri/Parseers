@@ -6,6 +6,8 @@
                         VarList
                               ID --> a
                         VarList
+                              ID --> a
+                        VarList
                               ID --> b
                         VarList
                               ID --> c
@@ -23,18 +25,8 @@
                                                           OPERATOR --> )
                                                                OPERATOR --> )
                                                                     OPERATOR --> +
-                                                                         ID --> c
+                                                                         IntNum --> 3
           OPER
                KEY WORLD --> FOR
                          ID --> i
                               OPERATOR --> =
-                                   IntNum --> 1
-               KEY WORLD --> TO
-                          ID --> O
-               KEY WORLD --> DO
-                      OPER
-                         ID --> i
-                              OPERATOR --> =
-                                   IntNum --> 3
-   END
-             ID --> sa

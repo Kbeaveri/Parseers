@@ -1,5 +1,6 @@
 ﻿#include <string>
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -170,11 +171,14 @@ public:
         }
     }
     void fout() {
-        ofstream fout("OUTPUT.txt");
+        ofstream Table("LAlka.txt");
+        if (Table.is_open()) {
+            cout << "HashTable :YES"<<endl;
+        }
         int i = 0;
         while (i < buffer_size) {
             if (arr[i] != nullptr) {
-                fout << "[" << i << "]" << "\t" << arr[i]->value2 << "\t" << arr[i]->value << endl;
+                Table << "[" << i << "]" << "\t" << arr[i]->value2 << "\t" << arr[i]->value << endl;
             }
             i++;
         }
