@@ -5,14 +5,26 @@
 #include <map>
 
 using namespace std;
+class Semantik {
+public:
+	string id_begin;
+	string id_end;
+	void Set_begin(string id) {
+		id_begin = id;
+	}
+	void Set_end(string id) {
+		id_end = id;
+	}
+	void Poliz_descr() {
+
+	}
+};
 
 class Parser
 {
 public:
 	string all_txt;
 	Analizator A;
-	string id_begin;
-	string id_end;
 	int space;
 	pair <string, string> now;
 	ofstream fout;

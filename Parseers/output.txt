@@ -28,10 +28,3 @@
                               OPERATOR --> =
                                    IntNum --> 3
                ID --> TO
-                          ID --> o
-               ID --> DO
-                         ID --> i
-                              OPERATOR --> =
-                                   IntNum --> 3
-   END
-             ID --> sa
