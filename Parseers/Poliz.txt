@@ -1,1 +1,6 @@
- m1  DEFL m2 BF m1 BRL
+PROGRAM  sa
+a b c 3INTEGER DECL 
+
+i 1 =  m1  DEFL O  m2 BF i 3 = a c b + v + c + =  m1 BRL 
+
+END  sa

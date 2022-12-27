@@ -4,6 +4,7 @@
 #include <fstream>
 #include <map>
 #include <iterator>
+#include <stack>
 
 using namespace std;
 class Semantik {
@@ -13,6 +14,7 @@ public:
 	ofstream poliz;
 	ofstream semant;
 	map <string,int> determinate;
+	vector <pair<string,string>> expr;
 	Semantik() {
 		poliz.open("Poliz.txt");
 		semant.open("semant.txt");
@@ -50,8 +52,53 @@ public:
 			semant << "end_id != begin_id" << endl<< "end_id = "<< id_end << "      " << "begin id = "<< id_begin;
 		}
 	}
-	void Poliz_descr() {
-
+	void Deycstra() {
+		stack <string> lol;
+		for (int i = 0; i < expr.size(); i++) {
+			cout << expr[i].first << " ";
+		}
+		cout << endl;
+		int i = 0;
+		while (i < expr.size()) {
+			if (expr[i].second == "IntNum" || expr[i].second == "ID") {
+				poliz << expr[i].first << " ";
+				i++;
+				continue;
+			}
+			if (expr[i].first == "+" || expr[i].first == "-") {
+				while (!lol.empty() && lol.top() != "="&& lol.top() != "(") {
+					poliz << lol.top() << " ";
+					lol.pop();
+				}
+				lol.push(expr[i].first);
+				i++;
+				continue;
+			}
+			if (expr[i].first == "=") {
+				lol.push("=");
+				i++;
+				continue;
+			}
+			if (expr[i].first == "(") {
+				lol.push("(");
+				i++;
+				continue;
+			}
+			if (expr[i].first == ")") {
+				while (!lol.empty() && lol.top() != "(") {
+					poliz << lol.top() << " ";
+					lol.pop();
+				}
+				lol.pop();
+				i++;
+				continue;
+			}
+		}
+		while (!lol.empty()) {
+			poliz << lol.top() << " ";
+			lol.pop();
+		}
+		expr.clear();
 	}
 };
 
@@ -64,6 +111,7 @@ public:
 	pair <string, string> now;
 	ofstream fout;
 	Semantik sm;
+	int kolvo = 0;
 	Parser(string all_txt) {
 		this->all_txt = all_txt;
 		A.Add(all_txt);
@@ -101,6 +149,7 @@ public:
 			check();
 			if (now.second == "ID") {
 				sm.id_begin = now.first;
+				sm.poliz << "PROGRAM  " << now.first << endl;
 				TreeAdd(space, now.second, now.first);
 				now = Next_Lic();
 				space += 5;
@@ -129,6 +178,8 @@ public:
 		while (true) {
 			if (now.first == "INTEGER") {
 				INTEGER();
+				sm.poliz << kolvo << "INTEGER DECL " << endl;
+				kolvo = 0;
 			}
 			else {
 				break;
@@ -142,6 +193,27 @@ public:
 			now = Next_Lic();
 			check();
 			ID();
+		}
+	}
+	void ID() {
+		kolvo++;
+		if (now.second == "ID") {
+			space = 24;
+			TreeAdd(space, "VarList");
+			space = 30;
+			sm.poliz << now.first << " ";
+			sm.Descr(now.first);
+			TreeAdd(space, now.second, now.first);
+			now = Next_Lic();
+			if (now.first == ",") {
+				now = Next_Lic();
+				check();
+				ID();
+			}
+		}
+		else {
+			cout << "ID eroor" << endl;
+			exit(-1);
 		}
 	}
 	void OP() {
@@ -158,33 +230,16 @@ public:
 			}
 		}
 	}
-	void ID() {
-		if (now.second == "ID") {
-			space = 24;
-			TreeAdd(space,"VarList");
-			space = 30;
-			sm.Descr(now.first);
-			TreeAdd(space, now.second, now.first);
-			now = Next_Lic();
-			if (now.first == ",") {
-				now = Next_Lic();
-				check();
-				ID();
-			}
-		}
-		else {
-			cout << "ID eroor" << endl;
-			exit(-1);
-		}
-	}
 	void Simple_ID() {
 		if (now.second == "ID") {
 			sm.Check_id(now.first);
+			sm.expr.push_back(make_pair(now.first, now.second));
 			space += 10;
 			TreeAdd(space, now.second, now.first);
 			now = Next_Lic();
 			check();
 			Operators();
+			sm.Deycstra();
 		}
 		else {
 			cout << "simple ID eroor" << endl;
@@ -194,6 +249,7 @@ public:
 	void Operators() {
 		if (now.first == "=") {
 			space += 5;
+			sm.expr.push_back(make_pair(now.first, now.second));
 			TreeAdd(space, now.second, now.first);
 			now = Next_Lic();
 			check();
@@ -209,6 +265,7 @@ public:
 		while (true) {
 			if (now.first == "+" || now.first == "-")
 			{
+				sm.expr.push_back(make_pair(now.first,now.second));
 				space += 5;
 				TreeAdd(space, now.second, now.first);
 				now = Next_Lic();
@@ -221,8 +278,8 @@ public:
 		}
 	}
 	void SimpleExp() {
-		bool flag = false;
 		if (now.second == "ID") {
+			sm.expr.push_back(make_pair(now.first, now.second));
 			sm.Check_id(now.first);
 			space += 5;
 			TreeAdd(space, now.second, now.first);
@@ -231,12 +288,14 @@ public:
 			return;
 		}
 		else if (now.first == "(") {
+			sm.expr.push_back(make_pair(now.first, now.second));
 			space += 5;
 			TreeAdd(space, now.second, now.first);
 			now = Next_Lic();
 			check();
 			Expr();
 			if (now.first == ")") {
+				sm.expr.push_back(make_pair(now.first, now.second));
 				space += 5;
 				TreeAdd(space, now.second, now.first);
 				now = Next_Lic();
@@ -248,6 +307,7 @@ public:
 			}
 		}
 		else if (now.second == "IntNum") {
+			sm.expr.push_back(make_pair(now.first, now.second));
 			space += 5;
 			TreeAdd(space, now.second, now.first);
 			now = Next_Lic();
@@ -264,11 +324,13 @@ public:
 		TreeAdd(space, "OPER");
 		if (now.first == "FOR") {
 			space = 15;
+			sm.poliz << endl;
 			TreeAdd(space, now.second, now.first);
 			now = Next_Lic();
 			check();
 			Simple_ID();
-			sm.poliz << " m1  DEFL";
+			sm.Deycstra();
+			sm.poliz << " m1  DEFL ";
 		}
 		else {
 			return;
@@ -280,7 +342,8 @@ public:
 			space += 6;
 			check();
 			Expr();
-			sm.poliz << " m2 BF";
+			sm.Deycstra();
+			sm.poliz << " m2 BF ";
 		}
 		else {
 			cout << "for_op error" << endl;
@@ -292,7 +355,8 @@ public:
 			now = Next_Lic();
 			check();
 			OP();
-			sm.poliz << " m1 BRL" << endl;
+			sm.Deycstra();
+			sm.poliz << " m1 BRL " << endl;
 		}
 		else {
 			error();
@@ -306,6 +370,7 @@ public:
 				space += 10;
 				sm.id_end = now.first;
 				TreeAdd(space, now.second, now.first);
+				sm.poliz <<endl <<"END  " << now.first << endl;
 			}
 			else {
 				cout << "Od";

@@ -8,33 +8,31 @@
                         VarList
                               ID --> b
                         VarList
-                              ID --> b
-                        VarList
                               ID --> c
    Operator
           OPER
-             ID --> c
-                  OPERATOR --> =
-                       ID --> a
-                            OPERATOR --> +
-                                 ID --> d
-                                      OPERATOR --> +
-                                           OPERATOR --> (
-                                                ID --> c
-                                                     OPERATOR --> +
-                                                          ID --> d
-                                                               OPERATOR --> )
-          OPER
-               ID --> FOR
+               KEY WORLD --> FOR
                          ID --> i
                               OPERATOR --> =
-                                   IntNum --> 3
-               ID --> TO
+                                   IntNum --> 1
+               KEY WORLD --> TO
                           ID --> O
-               ID --> DO
+               KEY WORLD --> DO
                       OPER
                          ID --> i
                               OPERATOR --> =
                                    IntNum --> 3
+                                          OPER
+                                             ID --> a
+                                                  OPERATOR --> =
+                                                       OPERATOR --> (
+                                                            ID --> c
+                                                                 OPERATOR --> +
+                                                                      ID --> b
+                                                                           OPERATOR --> +
+                                                                                ID --> v
+                                                                                     OPERATOR --> )
+                                                                                          OPERATOR --> +
+                                                                                               ID --> c
    END
              ID --> sa

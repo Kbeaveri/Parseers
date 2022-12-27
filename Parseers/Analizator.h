@@ -6,9 +6,9 @@ using namespace std;
 
 class Analizator {
 public:
-    vector <string> KW = { "PROGRAM","END","INTEGER" };
+    vector <string> KW = { "PROGRAM","END","INTEGER" ,"FOR","TO","DO" };
     vector <string> SEP = { "\n","\t" };
-    vector <string> Raz = { ")","(","=" , "+","FOR","TO","DO" };
+    vector <string> Raz = { ")","(","=" , "+" };
     string all_txt;
     string buf;
     int num = 0;
